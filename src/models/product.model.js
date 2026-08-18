@@ -70,21 +70,6 @@ const productSchema = new mongoose.Schema(
             trim: true
         },
 
-        weight: {
-            type: Number,
-            default: null
-        },
-
-        material: {
-            type: String,
-            trim: true
-        },
-
-        color: {
-            type: String,
-            trim: true
-        },
-
         status: {
             type: String,
             enum: ["DRAFT", "PUBLISHED", "ARCHIVED"],
@@ -103,8 +88,7 @@ const productSchema = new mongoose.Schema(
 
         /* ---------------------------------------------- merchandising */
 
-        // Free text, not an enum — marketing keeps inventing these.
-        // "Best seller", "New", "Tournament", "Club pack"…
+        
         badge: {
             type: String,
             trim: true,
@@ -142,8 +126,6 @@ const productSchema = new mongoose.Schema(
 
         /* ------------------------------------------ selectable options */
 
-        // Swatches on the product page. Display only: colour and option
-        // share one stock pool, so there is still a single sku/stock.
         colorways: [
             {
                 _id: false,
@@ -186,9 +168,7 @@ const productSchema = new mongoose.Schema(
             }
         ],
 
-        // Label/value pairs rather than fixed columns: a paddle needs
-        // Face/Core/Shape, a shoe needs Drop/Outsole/Fit, a bag needs
-        // Volume/Paddle capacity.
+    
         specs: [
             {
                 _id: false,
@@ -214,12 +194,7 @@ const productSchema = new mongoose.Schema(
     }
 );
 
-/**
- * The storefront's price pair, resolved here so no client can invert it:
- * `price` on the model is the list price and `discountPrice` the lower
- * amount actually charged, which is the opposite way round from how a
- * product page reads them.
- */
+
 productSchema.virtual("effectivePrice").get(function () {
     return this.discountPrice ?? this.price;
 });
