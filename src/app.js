@@ -17,9 +17,40 @@ import {
 } from "./middlewares/error.middleware.js";
 const app = express();
 
+const DEFAULT_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://pickleball-admin-two.vercel.app",
+    "https://pickleball-amber.vercel.app"
+];
+
+// Read lazily: dotenv.config() runs after this module is imported,
+// so process.env is not populated at module-evaluation time.
+const getAllowedOrigins = () => {
+    const fromEnv = (process.env.CORS_ORIGINS || "")
+        .split(",")
+        .map((origin) => origin.trim())
+        .filter(Boolean);
+
+    return [...new Set([...DEFAULT_ALLOWED_ORIGINS, ...fromEnv])];
+};
+
 app.use(
     cors({
-        origin: ["http://localhost:3000", "http://localhost:3001"],
+        origin: (origin, callback) => {
+            // Allow non-browser clients (curl, Postman, server-to-server)
+            if (!origin) {
+                return callback(null, true);
+            }
+
+            if (getAllowedOrigins().includes(origin)) {
+                return callback(null, true);
+            }
+
+            console.warn(`CORS blocked origin: ${origin}`);
+
+            return callback(null, false);
+        },
         credentials: true
     })
 );
