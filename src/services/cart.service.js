@@ -1,4 +1,5 @@
 import Cart from "../models/cart.model.js";
+import { sellingPrice } from "../utils/pricing.js";
 import Product from "../models/product.model.js";
 
 export const addToCartService = async ({
@@ -37,7 +38,7 @@ export const addToCartService = async ({
                 {
                     product: product._id,
                     quantity,
-                    price: product.discountPrice ?? product.price
+                    price: sellingPrice(product)
                 }
             ]
         });
@@ -57,12 +58,12 @@ export const addToCartService = async ({
 
             existingItem.quantity = newQuantity;
             existingItem.price =
-                product.discountPrice ?? product.price;
+                sellingPrice(product);
         } else {
             cart.items.push({
                 product: product._id,
                 quantity,
-                price: product.discountPrice ?? product.price
+                price: sellingPrice(product)
             });
         }
 
@@ -129,7 +130,7 @@ export const updateCartItemService = async ({
     }
 
     item.quantity = quantity;
-    item.price = product.discountPrice ?? product.price;
+    item.price = sellingPrice(product);
 
     await cart.save();
 

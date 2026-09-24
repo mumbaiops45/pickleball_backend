@@ -1,5 +1,6 @@
 import Order from "../models/order.model.js";
 import Product from "../models/product.model.js";
+import { sellingPrice } from "../utils/pricing.js";
 import User from "../models/user.model.js";
 import Payment from "../models/payment.model.js";
 import Cart from "../models/cart.model.js";
@@ -470,7 +471,7 @@ export const getLowStockProductsService = async ({
             sku: product.sku,
             category: product.category?.name || null,
             stock: product.stock,
-            price: product.discountPrice ?? product.price,
+            price: sellingPrice(product),
             status: product.status,
             isActive: product.isActive,
             image: product.images?.[0] || null,

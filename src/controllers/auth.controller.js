@@ -1,7 +1,43 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 import mongoose from "mongoose";
+import {
+    REFRESH_COOKIE_NAME,
+    signAccessToken,
+    issueRefreshToken,
+    rotateRefreshToken,
+    revokeRefreshToken,
+    revokeAllRefreshTokens,
+    setRefreshCookie,
+    clearRefreshCookie
+} from "../utils/token.js";
+
+const publicUser = (user) => ({
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    role: user.role
+});
+
+/**
+ * The access token goes back in the body for the client to hold
+ * in memory; the refresh token only ever travels as an httpOnly
+ * cookie, so page scripts can never read it.
+ */
+const issueSession = async ({ req, res, user }) => {
+    const refresh = await issueRefreshToken({
+        userId: user._id,
+        req
+    });
+
+    setRefreshCookie(res, refresh);
+
+    return {
+        token: signAccessToken(user),
+        user: publicUser(user)
+    };
+};
 
 export const register = async (req, res) => {
     try {
@@ -113,28 +149,19 @@ export const login = async (req, res) => {
             });
         }
 
-        const token = jwt.sign(
-            { id: user._id, role: user.role },
-            process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
-        );
-
         user.lastLoginAt = new Date();
         await user.save();
+
+        const session = await issueSession({
+            req,
+            res,
+            user
+        });
 
         return res.status(200).json({
             success: true,
             message: "Login successful",
-            data: {
-                token,
-                user: {
-                    id: user._id,
-                    name: user.name,
-                    email: user.email,
-                    phone: user.phone,
-                    role: user.role
-                }
-            }
+            data: session
         });
     } catch (error) {
         console.error("Login error:", error);
@@ -230,28 +257,19 @@ export const verifyOtp = async (req, res) => {
             });
         }
 
-        const token = jwt.sign(
-            { id: user._id, role: user.role },
-            process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
-        );
-
         user.lastLoginAt = new Date();
         await user.save();
+
+        const session = await issueSession({
+            req,
+            res,
+            user
+        });
 
         return res.status(200).json({
             success: true,
             message: "OTP verified successfully",
-            data: {
-                token,
-                user: {
-                    id: user._id,
-                    name: user.name,
-                    email: user.email,
-                    phone: user.phone,
-                    role: user.role
-                }
-            }
+            data: session
         });
 
     } catch (error) {
@@ -260,6 +278,101 @@ export const verifyOtp = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "OTP verification failed"
+        });
+    }
+};
+
+/**
+ * Called by the client when the access token expires. Reads the
+ * httpOnly cookie, rotates it, and hands back a fresh access
+ * token. Any failure clears the cookie so the browser stops
+ * retrying with a dead session.
+ */
+export const refresh = async (req, res) => {
+    try {
+        const rotated = await rotateRefreshToken({
+            token: req.cookies?.[REFRESH_COOKIE_NAME],
+            req
+        });
+
+        const user = await User.findById(rotated.userId).select(
+            "-password"
+        );
+
+        if (!user || user.isBlocked) {
+            await revokeAllRefreshTokens(rotated.userId);
+
+            clearRefreshCookie(res);
+
+            return res.status(401).json({
+                success: false,
+                message: user
+                    ? "User is blocked"
+                    : "User not found"
+            });
+        }
+
+        setRefreshCookie(res, rotated);
+
+        return res.status(200).json({
+            success: true,
+            message: "Token refreshed successfully",
+            data: {
+                token: signAccessToken(user),
+                user: publicUser(user)
+            }
+        });
+    } catch (error) {
+        clearRefreshCookie(res);
+
+        return res.status(401).json({
+            success: false,
+            message: error.message || "Invalid refresh token"
+        });
+    }
+};
+
+export const logout = async (req, res) => {
+    try {
+        await revokeRefreshToken(
+            req.cookies?.[REFRESH_COOKIE_NAME]
+        );
+
+        clearRefreshCookie(res);
+
+        return res.status(200).json({
+            success: true,
+            message: "Logged out successfully"
+        });
+    } catch (error) {
+        console.error("Logout error:", error);
+
+        clearRefreshCookie(res);
+
+        return res.status(500).json({
+            success: false,
+            message: "Logout failed"
+        });
+    }
+};
+
+// Signs the user out of every device.
+export const logoutAll = async (req, res) => {
+    try {
+        await revokeAllRefreshTokens(req.user._id);
+
+        clearRefreshCookie(res);
+
+        return res.status(200).json({
+            success: true,
+            message: "Logged out from all devices"
+        });
+    } catch (error) {
+        console.error("Logout all error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Logout failed"
         });
     }
 };

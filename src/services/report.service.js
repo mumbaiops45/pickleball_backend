@@ -1,5 +1,6 @@
 import Order from "../models/order.model.js";
 import Product from "../models/product.model.js";
+import { sellingPrice } from "../utils/pricing.js";
 import User from "../models/user.model.js";
 import Payment from "../models/payment.model.js";
 import mongoose from "mongoose";
@@ -577,7 +578,8 @@ export const getInventoryReportService = async ({
                             $multiply: [
                                 "$stock",
                                 {
-                                    $ifNull: [
+                                    $cond: [
+                                        { $and: [{ $gt: ["$discountPrice", 0] }, { $lt: ["$discountPrice", "$price"] }] },
                                         "$discountPrice",
                                         "$price"
                                     ]
@@ -632,7 +634,7 @@ export const getInventoryReportService = async ({
         pagination: pageMeta(safePage, safeLimit, total),
         rows: products.map((product) => {
             const effective =
-                product.discountPrice ?? product.price;
+                sellingPrice(product);
 
             return {
                 productId: product._id,

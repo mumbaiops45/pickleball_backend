@@ -11,6 +11,7 @@ import orderRoutes from "./routes/order.routes.js";
 import paymentRoutes from "./routes/payment.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import reportRoutes from "./routes/report.routes.js";
+import shippingRoutes from "./routes/shipping.routes.js";
 import {
     notFoundHandler,
     errorHandler
@@ -55,7 +56,15 @@ app.use(
     })
 );
 
-app.use(express.json());
+// The Razorpay webhook signature is computed over the exact
+// bytes it sent, so keep a copy before JSON parsing.
+app.use(
+    express.json({
+        verify: (req, res, buf) => {
+            req.rawBody = buf;
+        }
+    })
+);
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
@@ -70,6 +79,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/shipping", shippingRoutes);
 
 app.get("/", (req, res) => {
     res.status(200).json({

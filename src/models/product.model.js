@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { sellingPrice } from "../utils/pricing.js";
 
 const productSchema = new mongoose.Schema(
     {
@@ -196,12 +197,12 @@ const productSchema = new mongoose.Schema(
 
 
 productSchema.virtual("effectivePrice").get(function () {
-    return this.discountPrice ?? this.price;
+    return sellingPrice(this);
 });
 
 // The struck-through number, or null when the product is not on offer.
 productSchema.virtual("compareAt").get(function () {
-    return this.discountPrice ? this.price : null;
+    return sellingPrice(this) < this.price ? this.price : null;
 });
 
 productSchema.virtual("swatches").get(function () {

@@ -1,0 +1,190 @@
+[
+  {
+    "slug": "sixx-club-40",
+    "name": "SIXX Club 40 Outdoor",
+    "sku": "SX-CL40-03",
+    "categoryName": "Ball",
+    "description": "The ball we put out for Saturday open play. Softer than a tournament ball, which means it survives a beginner's mishit off the edge guard instead of cracking.",
+    "shortDescription": "3-ball pack · the open-play workhorse",
+    "price": 749,
+    "discountPrice": null,
+    "stock": 190,
+    "brand": "SIXX",
+    "type": null,
+    "skill": "Beginner",
+    "badge": null,
+    "rating": 4.5,
+    "reviewCount": 528,
+    "optionLabel": "Pack size",
+    "options": [
+      "3 balls"
+    ],
+    "colorways": [
+      {
+        "name": "Yellow",
+        "hex": "#f2c200"
+      },
+      {
+        "name": "Black pack",
+        "hex": "#14171d"
+      }
+    ],
+    "highlights": [
+      "Softer shell that survives edge-guard hits",
+      "40-hole outdoor pattern",
+      "The cheapest ball we are willing to stock"
+    ],
+    "specs": [
+      {
+        "label": "Brand",
+        "value": "SIXX"
+      },
+      {
+        "label": "Type",
+        "value": "Outdoor"
+      },
+      {
+        "label": "Holes",
+        "value": "40"
+      },
+      {
+        "label": "Diameter",
+        "value": "74mm"
+      },
+      {
+        "label": "Pack",
+        "value": "3 balls"
+      }
+    ],
+    "images": [
+      "/photos/ballproduct3.png"
+    ],
+    "status": "PUBLISHED",
+    "isActive": true,
+    "isFeatured": false
+  },
+  {
+    "slug": "sixx-tour-40",
+    "name": "SIXX Tour 40 Premium",
+    "sku": "SX-TR40-03",
+    "categoryName": "Ball",
+    "description": "SIXX's premium one-piece ball. No seam means no split, and the tighter weight tolerance is what tournament directors are actually paying for.",
+    "shortDescription": "3-ball pack · one-piece molded",
+    "price": 1099,
+    "discountPrice": null,
+    "stock": 132,
+    "brand": "SIXX",
+    "type": null,
+    "skill": "Advanced",
+    "badge": "Tournament",
+    "rating": 4.8,
+    "reviewCount": 397,
+    "optionLabel": "Pack size",
+    "options": [
+      "3 balls"
+    ],
+    "colorways": [
+      {
+        "name": "Optic",
+        "hex": "#d4ff3f"
+      },
+      {
+        "name": "Black pack",
+        "hex": "#14171d"
+      }
+    ],
+    "highlights": [
+      "One-piece mold, no seam to split",
+      "Tight weight tolerance sleeve to sleeve",
+      "Approved for tournament play"
+    ],
+    "specs": [
+      {
+        "label": "Brand",
+        "value": "SIXX"
+      },
+      {
+        "label": "Type",
+        "value": "Outdoor"
+      },
+      {
+        "label": "Holes",
+        "value": "40"
+      },
+      {
+        "label": "Diameter",
+        "value": "74mm"
+      },
+      {
+        "label": "Pack",
+        "value": "3 balls"
+      }
+    ],
+    "images": [
+      "/photos/ballproduct4.png"
+    ],
+    "status": "PUBLISHED",
+    "isActive": true,
+    "isFeatured": false
+  },
+  {
+    "slug": "sixx-bulk-20",
+    "name": "SIXX 20-Ball Bulk Box",
+    "sku": "SX-BLK-20",
+    "categoryName": "Ball",
+    "description": "Twenty Tour 40s in a plain carton. This is what our coaching partners order when they are feeding drills four nights a week and losing balls over the fence.",
+    "shortDescription": "20 balls · coaching and ball-machine stock",
+    "price": 7326,
+    "discountPrice": 5999,
+    "stock": 47,
+    "brand": "SIXX",
+    "type": null,
+    "skill": "All levels",
+    "badge": "Best value",
+    "rating": 4.9,
+    "reviewCount": 214,
+    "optionLabel": "Pack size",
+    "options": [
+      "20 balls"
+    ],
+    "colorways": [
+      {
+        "name": "Bulk carton",
+        "hex": "#f5f3ed"
+      }
+    ],
+    "highlights": [
+      "Twenty Tour 40 balls in one carton",
+      "Roughly a third off the sleeve price per ball",
+      "Sized for a ball machine hopper"
+    ],
+    "specs": [
+      {
+        "label": "Brand",
+        "value": "SIXX"
+      },
+      {
+        "label": "Type",
+        "value": "Outdoor"
+      },
+      {
+        "label": "Holes",
+        "value": "40"
+      },
+      {
+        "label": "Diameter",
+        "value": "74mm"
+      },
+      {
+        "label": "Pack",
+        "value": "20 balls"
+      }
+    ],
+    "images": [
+      "/photos/ballproduct5.png"
+    ],
+    "status": "PUBLISHED",
+    "isActive": true,
+    "isFeatured": false
+  }
+]

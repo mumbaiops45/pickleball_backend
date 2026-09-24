@@ -88,6 +88,123 @@ const shippingAddressSchema = new mongoose.Schema(
     }
 );
 
+const statusEventSchema = new mongoose.Schema(
+    {
+        status: {
+            type: String,
+            required: true
+        },
+
+        note: {
+            type: String,
+            default: ""
+        },
+
+        at: {
+            type: Date,
+            default: Date.now
+        }
+    },
+    {
+        _id: false
+    }
+);
+
+// One courier scan, as Shiprocket reports it.
+const trackingEventSchema = new mongoose.Schema(
+    {
+        status: {
+            type: String,
+            default: ""
+        },
+
+        activity: {
+            type: String,
+            default: ""
+        },
+
+        location: {
+            type: String,
+            default: ""
+        },
+
+        at: {
+            type: Date,
+            default: null
+        }
+    },
+    {
+        _id: false
+    }
+);
+
+/**
+ * Courier details. Filled by the Shiprocket integration, or by an
+ * admin by hand for a parcel sent some other way.
+ */
+const shipmentSchema = new mongoose.Schema(
+    {
+        provider: {
+            type: String,
+            default: null
+        },
+
+        shiprocketOrderId: {
+            type: String,
+            default: null
+        },
+
+        shipmentId: {
+            type: String,
+            default: null
+        },
+
+        awbCode: {
+            type: String,
+            default: null
+        },
+
+        courierName: {
+            type: String,
+            default: null
+        },
+
+        trackingUrl: {
+            type: String,
+            default: null
+        },
+
+        // the courier's own wording, e.g. "OUT FOR DELIVERY"
+        currentStatus: {
+            type: String,
+            default: null
+        },
+
+        estimatedDelivery: {
+            type: Date,
+            default: null
+        },
+
+        events: {
+            type: [trackingEventSchema],
+            default: []
+        },
+
+        lastSyncedAt: {
+            type: Date,
+            default: null
+        },
+
+        lastError: {
+            type: String,
+            default: null
+        }
+    },
+    {
+        _id: false
+    }
+);
+
 const orderSchema = new mongoose.Schema(
     {
         orderNumber: {
@@ -183,6 +300,28 @@ const orderSchema = new mongoose.Schema(
         cancellationReason: {
             type: String,
             default: null
+        },
+
+        shippedAt: {
+            type: Date,
+            default: null
+        },
+
+        deliveredAt: {
+            type: Date,
+            default: null
+        },
+
+        // Every orderStatus change, oldest first: the customer's
+        // tracking timeline is drawn from this.
+        statusHistory: {
+            type: [statusEventSchema],
+            default: []
+        },
+
+        shipment: {
+            type: shipmentSchema,
+            default: () => ({})
         }
     },
     {

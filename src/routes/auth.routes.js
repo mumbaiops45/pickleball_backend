@@ -5,6 +5,9 @@ import {
     login,
     sendOtp,
     verifyOtp,
+    refresh,
+    logout,
+    logoutAll,
     getUsers,
     getUserById,
     updateUser,
@@ -23,6 +26,11 @@ router.post("/login", login);
 // OTP routes
 router.post("/send-otp", sendOtp);
 router.post("/verify-otp", verifyOtp);
+
+// Session
+router.post("/refresh", refresh);
+router.post("/logout", logout);
+router.post("/logout-all", authMiddleware, logoutAll);
 
 // User management
 router.get(
