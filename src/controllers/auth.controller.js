@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
 import mongoose from "mongoose";
+import { registrationProblem } from "../utils/validators.js";
 import {
     REFRESH_COOKIE_NAME,
     signAccessToken,
@@ -43,16 +44,12 @@ export const register = async (req, res) => {
     try {
         const { name, email, phone, password } = req.body;
 
-        if (!email && !phone) {
+        const problem = registrationProblem({ name, email, phone, password });
+
+        if (problem) {
             return res.status(400).json({
                 success: false,
-                message: "Email or phone is required"
-            });
-        }
-        if (!password) {
-            return res.status(400).json({
-                success: false,
-                message: "Password is required"
+                message: problem
             });
         }
 

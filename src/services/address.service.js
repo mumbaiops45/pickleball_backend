@@ -1,4 +1,11 @@
 import Address from "../models/address.model.js";
+import { addressProblem } from "../utils/validators.js";
+
+const invalid = (message) => {
+    const error = new Error(message);
+    error.statusCode = 400;
+    return error;
+};
 
 export const createAddressService = async (userId, data) => {
     const {
@@ -23,6 +30,12 @@ export const createAddressService = async (userId, data) => {
         !pincode
     ) {
         throw new Error("Required address fields are missing");
+    }
+
+    const problem = addressProblem(data);
+
+    if (problem) {
+        throw invalid(problem);
     }
 
     if (isDefault === true) {
@@ -88,6 +101,12 @@ export const updateAddressService = async (
 
     if (!address) {
         throw new Error("Address not found");
+    }
+
+    const problem = addressProblem(data, { partial: true });
+
+    if (problem) {
+        throw invalid(problem);
     }
 
     if (data.isDefault === true) {
